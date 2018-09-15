@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>vue-test</title>
+</head>
+
+<body>
+    <div id="app">
+        <input v-on:keyup="saveInput()" v-on:keyup.enter="addTodo" type="text" v-model="input" >
+        <button v-on:click="addTodo">提交</button>
+        <ul v-for="item in todoLists">
+            <li>{{item.content}}
+                <label>
+                    {{ checked }}
+                    <input type="checkbox" v-model="item.checked" v-on:click="checkedTodo(item)">
+                </label>
+                <span>{{item.createAt}}</span>
+                <button v-if="!item.checked">未完成</button>
+                <button v-if="item.checked">已完成</button>
+                <button v-on:click="deleteTodo(item)">删除</button>
+            </li>
+        </ul>
+    </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
+    <script>
+        var app = new Vue({
+            el: '#app',
+            data: function () {
+                return {
+                    input: '',
+                    checked: '',
+                    todoLists: [],
+                }
+            },
+            methods: {
+                //如果用户没有添加todo,保存用户在input中输入的文字，刷新之后依然存在。
+                saveInput() {
+                    localStorage.input = JSON.stringify(this.input)
+                },
+                addTodo() {
+                    var todo = {
+                        content: this.input,
+                        checked: false,
+                        createAt: new Date(),
+                    }
+                    if (this.input) {
+                        this.todoLists.push(todo)
+                        localStorage.todoLists = JSON.stringify(this.todoLists)
+                        this.input = ""
+                        //添加todo之后，删除暂存在localStorage的input
+                        localStorage.input = ''
+                    }
+                },
+                deleteTodo(todo) {
+                    let index = this.todoLists.indexOf(todo)
+                    this.todoLists.splice(index, 1)
+                    localStorage.todoLists = JSON.stringify(this.todoLists)
+                },
+                checkedTodo(todo) {
+                    let index = this.todoLists.indexOf(todo)
+                    if (todo.checked) {
+                        this.todoLists[index].checked = false
+                    } else {
+                        this.todoLists[index].checked = true
+                    }
+                    localStorage.todoLists = JSON.stringify(this.todoLists)
+                }
+            },
+            mounted() {
+                //vue渲染到页面之后，开始载入资料
+                if (localStorage.input) {
+                    this.input = JSON.parse(localStorage.input)
+                }
+                if (localStorage.todoLists) {
+                    this.todoLists = JSON.parse(localStorage.todoLists)
+                } else {
+                    localStorage.todoLists = []
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>
