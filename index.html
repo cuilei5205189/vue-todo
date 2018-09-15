@@ -12,33 +12,77 @@
 
 <body>
     <div class="container" id="app">
-        <div class="input-group mb-3">
-            <input type="text" class="form-control" placeholder="添加你的待办事项" v-on:keyup="saveInput()" v-on:keyup.enter="addTodo"
-                type="text" v-model="input">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button" id="button-addon2" v-on:click="addTodo">+</button>
+        <section class="signInAndSignUp" v-if="!currentUser">
+            <label>
+                <input type="radio" name="type" v-model="actionType" value="signUp">
+                注册
+            </label>
+            <label>
+                <input type="radio" name="type" v-model="actionType" value="signIn">
+                登入
+            </label>
+            <div class="signIn" v-if="actionType==='signIn'">
+                <form @submit.prevent=signIn>
+                    <div class="formRow">
+                        用户名<input type="text" v-model="formData.username">
+                    </div>
+                    <div class="formRow">
+                        密码<input type="password" v-model="formData.password">
+                    </div>
+                    <div class="formActions">
+                        <input type="submit" value="登入">
+                    </div>
+                </form>
             </div>
-        </div>
-        <div class="showTodos">
-            <ul v-for="item in todoLists">
-                <li>
-                    <label>
-                        {{ checked }}
-                        <input type="checkbox" v-model="item.checked" v-on:click="checkedTodo(item)">
-                    </label>
-                    {{item.content}}
-                    <span>{{item.createAt}}</span>
-                    <span v-if="!item.checked">未完成</span>
-                    <span v-if="item.checked">已完成</span>
-                    <button v-on:click="deleteTodo(item)">删除</button>
-                </li>
-                <hr>
-            </ul>
-        </div>
+            <div class="signUp" v-if="actionType==='signUp'">
+                <form @submit.prevent=signUp>
+                    <div class="formRow">
+                        用户名<input type="text" v-model="formData.username">
+                    </div>
+                    <div class="formRow">
+                        密码<input type="password" v-model="formData.password">
+                    </div>
+                    <div class="formActions">
+                        <input type="submit" value="注册">
+                    </div>
+                </form>
+            </div>
+        </section>
+        <section class="todoList" v-if="currentUser">
+            <div class="newTodo">
+                <button @click="logout">登出</button>
+                <span>你好，{{getCurrentUser().username}}</span>
+                <div class="input-group mb-3">
+                    <input type="text" class="form-control" placeholder="添加你的待办事项" v-on:keyup="saveInput"
+                        v-on:keyup.enter="addTodo" type="text" v-model="input">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="button-addon2" v-on:click="addTodo">+</button>
+                    </div>
+                </div>
+            </div>
+            <div class="showTodos">
+                <ul v-for="item in todoLists">
+                    <li>
+                        <label>
+                            {{ checked }}
+                            <input type="checkbox" v-model="item.checked" v-on:click="checkedTodo(item)">
+                        </label>
+                        {{item.content}}
+                        <span>{{item.createAt}}</span>
+                        <span v-if="!item.checked">未完成</span>
+                        <span v-if="item.checked">已完成</span>
+                        <button v-on:click="deleteTodo(item)">删除</button>
+                    </li>
+                    <hr>
+                </ul>
+            </div>
+        </section>
     </div>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
+    <script src="//cdn.jsdelivr.net/npm/leancloud-storage@3.10.0/dist/av-min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
+    <script src="./AVinit.js"></script>
     <script src="./main.js"></script>
 </body>
 
