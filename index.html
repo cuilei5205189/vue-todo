@@ -6,25 +6,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>vue-test</title>
+    <link rel='stylesheet' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.css' />
+    <style>
+        .container {
+            margin-top: 100px;
+            width: 550px;
+        }
+        li {
+            list-style: none;
+        }
+    </style>
 </head>
 
 <body>
-    <div id="app">
-        <input v-on:keyup="saveInput()" v-on:keyup.enter="addTodo" type="text" v-model="input" >
-        <button v-on:click="addTodo">提交</button>
-        <ul v-for="item in todoLists">
-            <li>{{item.content}}
-                <label>
-                    {{ checked }}
-                    <input type="checkbox" v-model="item.checked" v-on:click="checkedTodo(item)">
-                </label>
-                <span>{{item.createAt}}</span>
-                <button v-if="!item.checked">未完成</button>
-                <button v-if="item.checked">已完成</button>
-                <button v-on:click="deleteTodo(item)">删除</button>
-            </li>
-        </ul>
+    <div class="container" id="app">
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="添加你的待办事项" v-on:keyup="saveInput()" v-on:keyup.enter="addTodo"
+                type="text" v-model="input">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" id="button-addon2" v-on:click="addTodo">+</button>
+            </div>
+        </div>
+        <div class="input-group mb-3">
+            <ul v-for="item in todoLists">
+                <li>
+                    <label>
+                        {{ checked }}
+                        <input type="checkbox" v-model="item.checked" v-on:click="checkedTodo(item)">
+                    </label>
+                    {{item.content}}
+                    <span>{{item.createAt}}</span>
+                    <span v-if="!item.checked">未完成</span>
+                    <span v-if="item.checked">已完成</span>
+                    <button v-on:click="deleteTodo(item)">x</button>
+                </li>
+                <hr>
+            </ul>
+        </div>
     </div>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js'></script>
     <script>
         var app = new Vue({
